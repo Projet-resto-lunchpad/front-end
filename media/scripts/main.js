@@ -1,19 +1,53 @@
 
 const api = {
+    root: '.',
     uri: {
-        'categs': '/categories'
+        categs: '/categories'
     },
-    call: async function(uri, method = 'GET', data = {}){
-        const r = await fetch(uri, {
-            method: method,
-            mode: 'cors',
-            cache: 'no-cache',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        return r.json();
+    mocks: {
+        categs: [
+            {'id': 10, 'name': 'Cocktails', 'img': ''},
+            {'id': 20, 'name': 'Sans alcool', 'img': ''},
+            {'id': 30, 'name': 'Bières pression', 'img': ''},
+            {'id': 40, 'name': 'Bières bouteille', 'img': ''},
+            {'id': 50, 'name': 'Vins', 'img': ''},
+            {'id': 60, 'name': 'Entrées (hors salades)', 'img': ''},
+            {'id': 70, 'name': 'Salades', 'img': ''},
+            {'id': 80, 'name': 'Plats froids', 'img': ''},
+            {'id': 90, 'name': 'Plats chauds', 'img': ''},
+            {'id': 95, 'name': 'Desserts et cafés', 'img': ''}
+        ]
+    },
+    call: async function(route, method = 'GET', data = {}){
+        if(api.uri[route]) {
+            const o = {
+                method: method,
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            if(method in ['POST', 'PUT']) {
+                o.body = JSON.stringify(data);
+            }
+            const r = await fetch(api.root+api.uri[route], o);
+            return r.json();
+        } else {
+            throw new Error('Unknown route "'+route+'"');
+        }
+    },
+    mock: async function(route, method = 'GET', data = {}){
+
+        if(api.uri[route] && api.mocks[route]) {
+            return new Promise((resolve, reject) => {
+                window.setTimeout(() => {
+                    resolve(api.mocks[route]);
+                });
+            });
+        } else {
+            throw new Error('Unknown route "'+route+'"');
+        }
     }
 };
 
@@ -33,23 +67,32 @@ const clearContent = function(){
 const loadCategories = function(){
     clearContent();
     changeTitle('Chargement...');
-    api.call(api.categs).then((categories) => {
-        for(const categ in categories) {
+    api.mock('categs').then((categories) => {
+        for(const categ of categories) {
             const t = tpl.get('category');
             if(t) {
-                formatCategory(t, categ);
+                document.querySelector('#caveat').append(
+                    formatCategory(t, categ)
+                    );
             }
         }
+        changeTitle('Menu');
     });
 };
 const loadCategory = function(){};
 
 const formatCategory = function(template, category){
-
+    console.log(category);
+    if(category.img) {
+        template.querySelector('.category').style.backgroundImage = category.img;
+    }
+    template.querySelector('.category').dataset.id = category.id;
+    template.querySelector('.category header h3').innerText = category.name;
+    return template;
 };
 
 const formatProduct = function(template, product) {
-    
+
 };
 
 const manualCall = function(){};
@@ -60,6 +103,6 @@ const addToCart = function(){};
 const changeCart = function(){};
 const clearCart = function(){};
 
-document.addEventListener('load', () => {
-
+window.addEventListener('load', () => {
+    loadCategories();
 });
