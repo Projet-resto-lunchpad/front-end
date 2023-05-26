@@ -43,7 +43,7 @@ const api = {
             return new Promise((resolve, reject) => {
                 window.setTimeout(() => {
                     resolve(api.mocks[route]);
-                });
+                }, 500);
             });
         } else {
             throw new Error('Unknown route "'+route+'"');
@@ -58,7 +58,12 @@ const tpl = {
     }
 };
 
-const changeTitle = function(){};
+const cart = [];
+
+const changeTitle = function(t){
+    document.querySelector('#currentcateg').innerText = ''+t;
+};
+
 const clearContent = function(){
     changeTitle('');
     document.querySelector('#caveat').innerHTML = '';
@@ -76,6 +81,9 @@ const loadCategories = function(){
                     );
             }
         }
+        document.querySelectorAll('.category').forEach((e) => { e.addEventListener('click', () => {
+            window.alert('hello');
+        })});
         changeTitle('Menu');
     });
 };
@@ -102,6 +110,7 @@ const changeTableNum = function(){};
 const addToCart = function(){};
 const changeCart = function(){};
 const clearCart = function(){};
+const updateTotal = function(){};
 
 window.addEventListener('load', () => {
     loadCategories();
