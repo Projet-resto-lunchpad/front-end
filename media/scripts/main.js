@@ -2,7 +2,8 @@
 const api = {
     root: '.',
     uri: {
-        categs: '/categories'
+        categs: '/categories',
+        products: '/category/{p}/products'
     },
     mocks: {
         categs: [
@@ -16,9 +17,14 @@ const api = {
             {'id': 80, 'name': 'Plats froids', 'img': ''},
             {'id': 90, 'name': 'Plats chauds', 'img': ''},
             {'id': 95, 'name': 'Desserts et cafés', 'img': ''}
-        ]
+        ],
+        products: {
+            '10': [
+                {'id': 1001, 'name': 'Nuit blanche', 'img': '', 'price': 5.99}
+            ]
+        }
     },
-    call: async function(route, method = 'GET', data = {}){
+    call: async function(route, method = 'GET', data = {}, placeholders = {}){
         if(api.uri[route]) {
             const o = {
                 method: method,
@@ -31,18 +37,22 @@ const api = {
             if(method in ['POST', 'PUT']) {
                 o.body = JSON.stringify(data);
             }
-            const r = await fetch(api.root+api.uri[route], o);
+            let u = api.uri[route];
+            for(const p in placeholders) {
+                u = u.replace('{'+p+'}', placeholders[p]);
+            }
+            const r = await fetch(api.root+u, o);
             return r.json();
         } else {
             throw new Error('Unknown route "'+route+'"');
         }
     },
-    mock: async function(route, method = 'GET', data = {}){
-
+    mock: async function(route, method = 'GET', data = {}, placeholders = {}){
         if(api.uri[route] && api.mocks[route]) {
             return new Promise((resolve, reject) => {
                 window.setTimeout(() => {
-                    resolve(api.mocks[route]);
+                    console.log(api.mocks[route][placeholders['p']]);
+                    resolve(('products' == route)? api.mocks[route][placeholders['p']]:api.mocks[route]);
                 }, 500);
             });
         } else {
@@ -82,15 +92,28 @@ const loadCategories = function(){
             }
         }
         document.querySelectorAll('.category').forEach((e) => { e.addEventListener('click', () => {
-            window.alert('hello');
+            loadCategory(e.dataset.id, e.querySelector('header h3').innerText);
         })});
         changeTitle('Menu');
     });
 };
-const loadCategory = function(){};
+const loadCategory = function(id, title){
+    clearContent();
+    changeTitle('Chargement...');
+    api.mock('products', 'GET', {}, {p: id}).then((products) => {
+        for(const product of products) {
+            const t = tpl.get('product');
+            if(t) {
+                document.querySelector('#caveat').append(
+                    formatProduct(t, product)
+                    );
+            }
+        }
+        changeTitle(title);
+    });
+};
 
 const formatCategory = function(template, category){
-    console.log(category);
     if(category.img) {
         template.querySelector('.category').style.backgroundImage = category.img;
     }
@@ -100,7 +123,13 @@ const formatCategory = function(template, category){
 };
 
 const formatProduct = function(template, product) {
-
+    if(product.img) {
+        template.querySelector('.product').style.backgroundImage = product.img;
+    }
+    template.querySelector('.product').dataset.id = product.id;
+    template.querySelector('.product header h3').innerText = product.name;
+    template.querySelector('.product footer span').innerText = product.price;
+    return template;
 };
 
 const manualCall = function(){};
