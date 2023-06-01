@@ -3,7 +3,10 @@ const api = {
     root: '.',
     uri: {
         categs: '/categories',
-        products: '/category/{p}/products'
+        products: '/category/{p}/products',
+        tableget: '/table',
+        tableset: '/table',
+        manual: '/help'
     },
     mocks: {
         categs: [
@@ -22,7 +25,10 @@ const api = {
             '10': [
                 {'id': 1001, 'name': 'Nuit blanche', 'img': '', 'price': 5.99}
             ]
-        }
+        },
+        tableget: { 'table': Math.ceil(20 * Math.random()) },
+        tableset: { 'authorized': true },
+        manual: { 'done': true }
     },
     call: async function(route, method = 'GET', data = {}, placeholders = {}){
         if(api.uri[route]) {
@@ -132,9 +138,23 @@ const formatProduct = function(template, product) {
     return template;
 };
 
-const manualCall = function(){};
-const loadTableNum = function(){};
-const changeTableNum = function(){};
+const manualCall = function(){
+    api.mock('manual', 'POST').then((res) => {
+
+    });
+};
+const loadTableNum = function(){
+    api.mock('tableget', 'GET').then((t) => {
+        if(t.table) {
+            document.getElementById('tableId').innerText = t.table;
+        } else {
+            document.getElementById('tableId').innerText = 'Erreur';
+        }
+    });
+};
+const changeTableNum = function(){
+    
+};
 
 const addToCart = function(){};
 const changeCart = function(){};
