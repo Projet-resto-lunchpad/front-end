@@ -139,9 +139,12 @@ const formatProduct = function(template, product) {
 };
 
 const manualCall = function(){
-    api.mock('manual', 'POST').then((res) => {
-
-    });
+    if(!document.getElementById('manualcall').classList.contains('called')) {
+        document.getElementById('manualcall').classList.add('called');
+        api.mock('manual', 'POST').then((res) => {
+            showAlert('Nos équipières et équipiers ont été alerté-e-s !\n\nVous pouvez fermer cette boîte de dialogue sans soucis.');
+        });
+    }
 };
 const loadTableNum = function(){
     api.mock('tableget', 'GET').then((t) => {
@@ -161,6 +164,11 @@ const changeCart = function(){};
 const clearCart = function(){};
 const updateTotal = function(){};
 
+const showAlert = function(txt) {
+    window.alert(txt);
+};
+
 window.addEventListener('load', () => {
+    document.getElementById('manualcall').addEventListener('click', manualCall);
     loadCategories();
 });
