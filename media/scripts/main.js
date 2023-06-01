@@ -156,7 +156,14 @@ const loadTableNum = function(){
     });
 };
 const changeTableNum = function(){
-    
+    api.mock('tableset', 'POST', {'pwd': showPrompt('Mot de passe ?'), 't': showPrompt('Numéro de table ?')}).then((r) => {
+        if(r.authorized) {
+            loadTableNum();
+            showAlert('Numéro de table bien enregistré !');
+        } else {
+            showAlert('Erreur');
+        }
+    });
 };
 
 const addToCart = function(){};
@@ -166,6 +173,10 @@ const updateTotal = function(){};
 
 const showAlert = function(txt) {
     window.alert(txt);
+};
+
+const showPrompt = function(txt){
+    return window.prompt(txt);
 };
 
 window.addEventListener('load', () => {
