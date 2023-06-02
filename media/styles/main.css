@@ -78,3 +78,7 @@ a:hover {
 #cartprice:after {
     content: " €";
 }
+
+#cartcontent:empty:before {
+    content: "Panier vide";
+}

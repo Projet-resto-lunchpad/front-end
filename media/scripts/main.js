@@ -184,6 +184,7 @@ const addToCart = function(id, price, name, qtty = 1){
         cart.push({'id': id, 'price': price, 'qtty': qtty});
         const t = tpl.get('cartline');
         t.querySelector('.cartline').dataset.id = id;
+        t.querySelector('.orderline_price').dataset.id = id;
         t.querySelector('.orderline_qtty').value = qtty;
         t.querySelector('.orderline_name').innerText = name;
         t.querySelector('.orderline_price').innerText = price;
@@ -195,15 +196,27 @@ const addToCart = function(id, price, name, qtty = 1){
 };
 
 const changeCart = function(id){
-    cart.forEach((v, i, a) => {
-        if(v.id === id) {
-            cart[i].qtty = document.querySelector('.cartline[data-id="'+id+'"] .orderline_qtty').value;
-        }
-    });
+    const nqtty = document.querySelector('.cartline[data-id="'+id+'"] .orderline_qtty').value;
+    if(nqtty > 0) {
+        cart.forEach((v, i, a) => {
+            if(v.id === id) {
+                cart[i].qtty = nqtty;
+            }
+        });
+    } else {
+        cart.forEach((v, i, a) => {
+            if(v.id === id) {
+                delete cart[i];
+            }
+        });
+        document.querySelectorAll('.cartline[data-id="'+id+'"]').forEach((e) => e.remove());
+    }
     updateTotal();
 };
 
-const dropArticle = function(id){};
+const dropArticle = function(id){
+
+};
 
 const clearCart = function(){};
 const updateTotal = function(){
@@ -225,4 +238,5 @@ const showPrompt = function(txt){
 window.addEventListener('load', () => {
     document.getElementById('manualcall').addEventListener('click', manualCall);
     loadCategories();
+    updateTotal();
 });
