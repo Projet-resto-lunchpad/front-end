@@ -107,19 +107,24 @@ const loadCategory = function(id, title){
     clearContent();
     changeTitle('Chargement...');
     api.mock('products', 'GET', {}, {p: id}).then((products) => {
-        for(const product of products) {
-            const t = tpl.get('product');
-            if(t) {
-                document.querySelector('#caveat').append(
-                    formatProduct(t, product)
-                );
-                
+        if(products) {
+            for(const product of products) {
+                const t = tpl.get('product');
+                if(t) {
+                    document.querySelector('#caveat').append(
+                        formatProduct(t, product)
+                    );
+                    
+                }
             }
+            changeTitle(title);
+            document.querySelectorAll('.product').forEach((e) => { e.addEventListener('click', () => {
+                addToCart(e.dataset.id, e.dataset.price, e.querySelector('header h3').innerText);
+            })});
+        } else {
+            document.querySelector('#caveat').innerText = 'Aucun produit dans cette catégorie';
+            changeTitle(title);
         }
-        changeTitle(title);
-        document.querySelectorAll('.product').forEach((e) => { e.addEventListener('click', () => {
-            addToCart(e.dataset.id, e.dataset.price, e.querySelector('header h3').innerText);
-        })});
     });
 };
 
@@ -144,8 +149,8 @@ const formatProduct = function(template, product) {
 };
 
 const manualCall = function(){
-    if(!document.getElementById('manualcall').classList.contains('called')) {
-        document.getElementById('manualcall').classList.add('called');
+    if(!document.querySelector('#manualcall').classList.contains('called')) {
+        document.querySelector('#manualcall').classList.add('called');
         api.mock('manual', 'POST').then((res) => {
             showAlert('Nos équipières et équipiers ont été alerté-e-s !\n\nVous pouvez fermer cette boîte de dialogue sans soucis.');
         });
@@ -154,9 +159,9 @@ const manualCall = function(){
 const loadTableNum = function(){
     api.mock('tableget', 'GET').then((t) => {
         if(t.table) {
-            document.getElementById('tableId').innerText = t.table;
+            document.querySelector('#tableid').innerText = t.table;
         } else {
-            document.getElementById('tableId').innerText = 'Erreur';
+            document.querySelector('#tableid').innerText = 'Erreur';
         }
     });
 };
@@ -224,7 +229,7 @@ const updateTotal = function(){
     cart.forEach((v) => {
         total += v.qtty * v.price;
     });
-    document.getElementById('cartprice').innerText = Math.round(total, 2);
+    document.querySelector('#cartprice').innerText = Math.round(total, 2);
 };
 
 const showAlert = function(txt) {
@@ -236,8 +241,12 @@ const showPrompt = function(txt){
 };
 
 window.addEventListener('load', () => {
-    document.getElementById('manualcall').addEventListener('click', manualCall);
+    document.querySelector('#manualcall').addEventListener('click', manualCall);
     loadTableNum();
     loadCategories();
     updateTotal();
+    document.querySelector('#currentcateg').addEventListener('click', loadCategories);
 });
+
+history.pushState({hash: Math.random()}, 'fallback');
+window.addEventListener('popstate', (e) => { console.log(e); loadCategories(); e.preventDefault(); window.location.reload(); return false; });
