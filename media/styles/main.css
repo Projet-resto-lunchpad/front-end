@@ -21,6 +21,7 @@ body {
     display: grid;
     grid-gap: 20px;
     grid-template-rows: 9fr 1fr;
+    user-select: none;
 }
 
 #wrapper {
@@ -81,4 +82,16 @@ a:hover {
 
 #cartcontent:empty:before {
     content: "Panier vide";
+}
+
+#clearcart {
+    cursor: url('../images/cursor-del.svg'), not-allowed;
+}
+
+#manualcall {
+    cursor: help;
+}
+
+#currentcateg {
+    cursor: url('../images/cursor-back.svg'), context-menu;
 }

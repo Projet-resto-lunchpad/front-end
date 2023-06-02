@@ -194,7 +194,11 @@ const addToCart = function(id, price, name, qtty = 1){
         t.querySelector('.orderline_name').innerText = name;
         t.querySelector('.orderline_price').innerText = price;
         document.querySelector('#cartcontent').append(t);
-        document.querySelector('.cartline[data-id="'+id+'"]').addEventListener('dblclick', () => { dropArticle(id); });
+        document.querySelector('.cartline[data-id="'+id+'"]').addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            dropArticle(id);
+            return false;
+        });
         document.querySelector('.cartline[data-id="'+id+'"] .orderline_qtty').addEventListener('change', () => { changeCart(id); });
     }
     updateTotal();
@@ -264,6 +268,11 @@ window.addEventListener('load', () => {
     updateTotal();
     document.querySelector('#currentcateg').addEventListener('click', loadCategories);
     document.querySelector('#clearcart').addEventListener('click', clearCart);
+    document.querySelector('#tableidcontainer').addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        changeTableNum();
+        return false;
+    });
 });
 
 history.pushState({hash: Math.random()}, 'fallback');
