@@ -112,10 +112,14 @@ const loadCategory = function(id, title){
             if(t) {
                 document.querySelector('#caveat').append(
                     formatProduct(t, product)
-                    );
+                );
+                
             }
         }
         changeTitle(title);
+        document.querySelectorAll('.product').forEach((e) => { e.addEventListener('click', () => {
+            addToCart(e.dataset.id, e.dataset.price, e.querySelector('header h3').innerText);
+        })});
     });
 };
 
@@ -133,6 +137,7 @@ const formatProduct = function(template, product) {
         template.querySelector('.product').style.backgroundImage = product.img;
     }
     template.querySelector('.product').dataset.id = product.id;
+    template.querySelector('.product').dataset.price = product.price;
     template.querySelector('.product header h3').innerText = product.name;
     template.querySelector('.product footer span').innerText = product.price;
     return template;
@@ -166,10 +171,48 @@ const changeTableNum = function(){
     });
 };
 
-const addToCart = function(){};
-const changeCart = function(){};
+const addToCart = function(id, price, name, qtty = 1){
+    let found = false;
+    cart.forEach((v, i, a) => {
+        if(v.id === id) {
+            v.qtty += qtty;
+            document.querySelector('.cartline[data-id="'+id+'"] .orderline_qtty').value = v.qtty;
+            found = true;
+        }
+    });
+    if(!found) {
+        cart.push({'id': id, 'price': price, 'qtty': qtty});
+        const t = tpl.get('cartline');
+        t.querySelector('.cartline').dataset.id = id;
+        t.querySelector('.orderline_qtty').value = qtty;
+        t.querySelector('.orderline_name').innerText = name;
+        t.querySelector('.orderline_price').innerText = price;
+        document.querySelector('#cartcontent').append(t);
+        document.querySelector('.cartline[data-id="'+id+'"]').addEventListener('dblclick', () => { dropArticle(id); });
+        document.querySelector('.cartline[data-id="'+id+'"] .orderline_qtty').addEventListener('change', () => { changeCart(id); });
+    }
+    updateTotal();
+};
+
+const changeCart = function(id){
+    cart.forEach((v, i, a) => {
+        if(v.id === id) {
+            cart[i].qtty = document.querySelector('.cartline[data-id="'+id+'"] .orderline_qtty').value;
+        }
+    });
+    updateTotal();
+};
+
+const dropArticle = function(id){};
+
 const clearCart = function(){};
-const updateTotal = function(){};
+const updateTotal = function(){
+    let total = 0;
+    cart.forEach((v) => {
+        total += v.qtty * v.price;
+    });
+    document.getElementById('cartprice').innerText = Math.round(total, 2);
+};
 
 const showAlert = function(txt) {
     window.alert(txt);

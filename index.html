@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div id="wrapper">
+    <form id="wrapper">
         <main>
             <header>
                 <h1 id="currentcateg"></h1>
@@ -26,7 +26,7 @@
                 <span id="cartprice"></span>
             </footer>
         </aside>
-    </div>
+    </form>
     <footer id="others">
         <div>
             Numéro de table :
@@ -44,7 +44,11 @@
         </article>
     </template>
     <template id="tpl_cartline">
-        <dt class="orderline_name"></dt>
+        <dt class="cartline">
+            <input class="orderline_qtty" type="number" min="1" step="1" size="2" />
+            ×
+            <span class="orderline_name"></span>
+        </dt>
         <dd class="orderline_price"></dd>
     </template>
     <template id="tpl_product">
