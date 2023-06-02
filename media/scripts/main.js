@@ -237,6 +237,7 @@ const showPrompt = function(txt){
 
 window.addEventListener('load', () => {
     document.getElementById('manualcall').addEventListener('click', manualCall);
+    loadTableNum();
     loadCategories();
     updateTotal();
 });
