@@ -10,8 +10,8 @@ $stmt->execute();
 $c = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach($c as $l) {
     $r['categories'][] = [
-        'id' => $c['id'],
-        'name' => $c['name'],
+        'id' => $l['id'],
+        'name' => $l['name'],
     ];
 }
 
