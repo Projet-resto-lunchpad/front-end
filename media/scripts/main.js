@@ -1,6 +1,6 @@
 
 const api = {
-    root: '.',
+    root: '/api',
     uri: {
         categs: '/categories',
         products: '/category/{p}/products',
@@ -88,7 +88,7 @@ const clearContent = function(){
 const loadCategories = function(){
     clearContent();
     changeTitle('Chargement...');
-    api.mock('categs').then((categories) => {
+    api.call('categs').then((categories) => {
         for(const categ of categories) {
             const t = tpl.get('category');
             if(t) {
@@ -106,7 +106,7 @@ const loadCategories = function(){
 const loadCategory = function(id, title){
     clearContent();
     changeTitle('Chargement...');
-    api.mock('products', 'GET', {}, {p: id}).then((products) => {
+    api.call('products', 'GET', {}, {p: id}).then((products) => {
         if(products) {
             for(const product of products) {
                 const t = tpl.get('product');
@@ -151,13 +151,13 @@ const formatProduct = function(template, product) {
 const manualCall = function(){
     if(!document.querySelector('#manualcall').classList.contains('called')) {
         document.querySelector('#manualcall').classList.add('called');
-        api.mock('manual', 'POST').then((res) => {
+        api.call('manual', 'POST').then((res) => {
             showAlert('Nos équipières et équipiers ont été alerté-e-s !\n\nVous pouvez fermer cette boîte de dialogue sans soucis.');
         });
     }
 };
 const loadTableNum = function(){
-    api.mock('tableget', 'GET').then((t) => {
+    api.call('tableget', 'GET').then((t) => {
         if(t.table) {
             document.querySelector('#tableid').innerText = t.table;
         } else {
@@ -166,7 +166,7 @@ const loadTableNum = function(){
     });
 };
 const changeTableNum = function(){
-    api.mock('tableset', 'POST', {'pwd': showPrompt('Mot de passe ?'), 't': showPrompt('Numéro de table ?')}).then((r) => {
+    api.call('tableset', 'POST', {'pwd': showPrompt('Mot de passe ?'), 't': showPrompt('Numéro de table ?')}).then((r) => {
         if(r.authorized) {
             loadTableNum();
             showAlert('Numéro de table bien enregistré !');
