@@ -1,15 +1,13 @@
 <?php
 require_once('../_load.php');
 
-$r = [
-    'categories' => [],
-];
+$r = [];
 
 $stmt = $_sql->prepare('select * from `categories`');
 $stmt->execute();
 $c = $stmt->fetchAll(PDO::FETCH_ASSOC);
 foreach($c as $l) {
-    $r['categories'][] = [
+    $r[] = [
         'id' => $l['id'],
         'name' => $l['name'],
     ];
