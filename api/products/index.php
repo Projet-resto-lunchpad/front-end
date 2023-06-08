@@ -2,7 +2,7 @@
 require_once('../_load.php');
 
 $r = [
-    'ok' => $_d,
+    'ok' => $_GET,
 ];
 
 echo json_encode($r);
