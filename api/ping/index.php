@@ -5,8 +5,8 @@ $r = [];
 
 $r['pong'] = microtime(true);
 
-if(!empty($_data['ping'])) {
-    $r['diff'] = (microtime(true) - $_data['ping']);
+if(!empty($_d['ping'])) {
+    $r['diff'] = (microtime(true) - $_d['ping']);
 }
 
 echo json_encode($r);
