@@ -14,7 +14,8 @@ $r[] = [
     ];
 }
 elseif($_m == 'POST'){
-    
+    $pwd = isset($_POST["pwd"]);
+    $id = isset($_POST["t"]);
     if($pwd == 'admin'){
         $stmt = $_sql->prepare('insert into tables values ('$id ','$ip')');
         $stmt->execute();
