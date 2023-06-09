@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>L'ABC</title>
+    <link type="text/css" rel="stylesheet" href="./media/styles/main.css" />
+    <script type="text/javascript">
+const api = {
+    root: '/api',
+    uri: {
+        poll: '/poll'
+    },
+    call: async function(route, method = 'GET', data = {}, placeholders = {}){
+        if(api.uri[route]) {
+            const o = {
+                method: method,
+                mode: 'cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            if(method in ['POST', 'PUT']) {
+                o.body = JSON.stringify(data);
+            }
+            let u = api.uri[route];
+            for(const p in placeholders) {
+                u = u.replace('{'+p+'}', placeholders[p]);
+            }
+            const r = await fetch(api.root+u, o);
+            return r.json();
+        } else {
+            throw new Error('Unknown route "'+route+'"');
+        }
+    }
+};
+
+const tpl = {
+    get: function(shortid){
+        const t = document.querySelector('#tpl_'+shortid);
+        return t? t.content.cloneNode(true):null;
+    }
+};
+
+const poll = function() {
+    
+};
+
+const update = function() {
+
+};
+
+window.addEventListener('load', () => {
+    
+});
+
+    </script>
+</head>
+
+<body>
+    <header>
+        <h2></h2>
+    </header>
+    <main></main>
+    <template id="tpl_order">
+        <article class="order">
+            <header>
+                <h3></h3>
+            </header>
+            <p></p>
+        </article>
+    </template>
+</body>
+</html>
